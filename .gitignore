@@ -2,6 +2,7 @@
 *.pot
 *.pyc
 *.swp
+*.sqlite
 local_settings.py
 /__init__.py
 /manage.py
