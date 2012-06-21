@@ -3,10 +3,10 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
-	credit = models.DecimalField(max_digits=10, decimal_places=2)
+	credit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
 class UserTransfer(models.Model):
-	user = models.ForeignKey(User)
+	user = models.ForeignKey(User, null=False)
 	credit = models.DecimalField(max_digits=10, decimal_places=2)
 	entered = models.DateTimeField(auto_now_add=True)
 	confirmed = models.BooleanField()

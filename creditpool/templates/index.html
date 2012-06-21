@@ -1,0 +1,60 @@
+{% load currency %}
+{% load abs %}
+{% with me=user %}
+
+<h1>Summary Report for {{ me.get_full_name }}</h1>
+<h3>Current balance: {{ me.userprofile.credit|currency }}</h3>
+{% if me.userprofile.credit < 0 %}
+This means the credit pool owes you {{ me.userprofile.credit|abs|currency }}
+{% else %}
+This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
+{% endif %}
+
+{% if pending_transactions.exists %}
+<hr /><h3>Unconfirmed transactions</h3>
+
+<p>(Confirming a transaction means that you've seen it, not necessarily that you agree to it.  If you would like to contest a transaction, take it up with the transaction creator, in the "Who did it?" column.)</p>
+
+{% endif %}
+
+<p>(Confirming a transaction means that you've seen it, not necessarily that you agree to it.  If you would like to contest a transaction, take it up with the transaction creator, in the "Who did it?" column.)
+
+<hr /><h3>New transaction</h3>
+<select multiple name="sucker">
+
+{% for user in users|dictsort:"first_name"|dictsort:"last_name" %}
+	{% if user != me %}
+		<option value="{{ user.username }}">{{ user.get_full_name }} - {{ user.username }}</option>
+	{% endif %}
+{% endfor %}
+</select>
+<br />
+<input type="submit" name="action" value="Select Users" />
+
+{% if history = 7 %}
+	<hr /><h3>The week in review</h3>
+{% else %}
+	<hr /><h3>Some time ago...</h3>
+{% endif %}
+
+These are the transactions from the past <input type="text" name="history" value="{{ history }}" size=3 maxlength=5 /> days:<br />
+<input type="submit" name="action" value="Change History" /><p>
+
+<hr />
+<h3>Totals</h3>
+
+<table border=1>
+	{% for user in users|dictsort:"userprofile.credit" %}
+		<tr>
+			<td>{{ user.get_full_name }}</td>
+			<td>{{ user.userprofile.credit|currency }}</td>
+		</tr>
+	{% endfor %}
+</table>
+
+<p>Total imbalance: {{ total_imbalance|currency }}<br />
+Average imbalance: {{ average_imbalance|currency }}<br />
+Total throughput: {{ throughput|currency }}<br />
+
+
+{% endwith %}
