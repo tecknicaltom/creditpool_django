@@ -24,3 +24,10 @@ def index(request):
 			'throughput': throughput,
 	}
 	return render_to_response('index.html', RequestContext(request, context))
+
+def new_transaction(request):
+	transaction_users = get_users().filter(pk__in=request.GET.getlist('user'))
+	context = {
+			'transaction_users': transaction_users,
+	}
+	return render_to_response('new_transaction.html', RequestContext(request, context))

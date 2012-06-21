@@ -1,0 +1,29 @@
+{% with me=user %}
+<h1>Transaction Data</h1>
+<form action="" method="post">
+<table border=1>
+
+		<tr>
+			<th>Name</th>
+			<th>...owes this much</th>
+		</tr>
+
+		{% for user in transaction_users %}
+		<tr>
+			<td>{{ user.get_full_name }} - {{ user.username }}</td>
+			{% if user == me %}
+			<td>N/A</td>
+			{% else %}
+			<td><input type="text" name="val_{{ user.pk }}" value="" /></td>
+			{% endif %}
+		</tr>
+		{% endfor %}
+
+	</table>
+	(You may enter arithmetic, for example "(22.05 + 5.22) / 3")
+	<p>Description:<br /><input type="text" name="descrip" value="" size="50" maxlength="100" /><p>
+	<p><input type="submit" name="action" value="Submit Transaction" />
+
+	</form>
+
+	{% endwith %}

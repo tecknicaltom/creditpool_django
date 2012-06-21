@@ -20,16 +20,18 @@ This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
 <p>(Confirming a transaction means that you've seen it, not necessarily that you agree to it.  If you would like to contest a transaction, take it up with the transaction creator, in the "Who did it?" column.)
 
 <hr /><h3>New transaction</h3>
-<select multiple name="sucker">
+<form action="{% url creditpool.views.new_transaction %}" method="get">
+<select multiple name="user">
 
 {% for user in users|dictsort:"first_name"|dictsort:"last_name" %}
 	{% if user != me %}
-		<option value="{{ user.username }}">{{ user.get_full_name }} - {{ user.username }}</option>
+		<option value="{{ user.pk }}">{{ user.get_full_name }} - {{ user.username }}</option>
 	{% endif %}
 {% endfor %}
 </select>
 <br />
 <input type="submit" name="action" value="Select Users" />
+</form>
 
 {% if history = 7 %}
 	<hr /><h3>The week in review</h3>
