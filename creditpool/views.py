@@ -77,7 +77,7 @@ def commit_transaction(request):
 	request.user.userprofile.credit += my_transaction_amt
 	request.user.userprofile.save()
 
-	return redirect(index)
+	return redirect(transfer)
 
 def transfer(request, id):
 	transfer = get_object_or_404(GlobalTransfer, pk=id)
