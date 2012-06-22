@@ -10,14 +10,15 @@ This means the credit pool owes you {{ me.userprofile.credit|abs|currency }}
 This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
 {% endif %}
 
-{% if pending_transactions.exists %}
+{% if unconfirmed_transactions.exists %}
 <hr /><h3>Unconfirmed transactions</h3>
+
+{% include "transaction_list.inc" with transactions=unconfirmed_transactions allow_confirm=1 %}
 
 <p>(Confirming a transaction means that you've seen it, not necessarily that you agree to it.  If you would like to contest a transaction, take it up with the transaction creator, in the "Who did it?" column.)</p>
 
 {% endif %}
 
-<p>(Confirming a transaction means that you've seen it, not necessarily that you agree to it.  If you would like to contest a transaction, take it up with the transaction creator, in the "Who did it?" column.)
 
 <hr /><h3>New transaction</h3>
 <form action="{% url creditpool.views.new_transaction %}" method="get">
@@ -41,6 +42,8 @@ This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
 
 These are the transactions from the past <input type="text" name="history" value="{{ history }}" size=3 maxlength=5 /> days:<br />
 <input type="submit" name="action" value="Change History" /><p>
+
+{% include "transaction_list.inc" with transactions=me.usertransfer_set.all %}
 
 <hr />
 <h3>Totals</h3>
