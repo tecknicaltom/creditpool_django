@@ -3,6 +3,9 @@ Expects variables set:
  allow_confirm: boolean, whether to include the confirm buttons
  transactions: QuerySet of UserTransfer items
 {% endcomment %}
+
+{% load currency %}
+
 <table border=1>
 	<tr>
 		{% if allow_confirm %}
@@ -25,7 +28,7 @@ Expects variables set:
 		{% endif %}
 		<td><a href="{{ transaction.get_absolute_url }}">{{ transaction.pk }}</a></td>
 		<td>{{ transaction.entered }}</td>
-		<td>{{ user_transaction.credit }}</td>
+		<td>{{ user_transaction.credit|currency }}</td>
 		<td>{{ transaction.description }}</td>
 		<td>{{ transaction.creator.get_full_name }} - {{ transaction.creator.username }}</td>
 	</tr>
