@@ -1,5 +1,7 @@
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from decimal import Decimal
+import re
 from models import *
 
 def get_users():
@@ -31,3 +33,27 @@ def new_transaction(request):
 			'transaction_users': transaction_users,
 	}
 	return render_to_response('new_transaction.html', RequestContext(request, context))
+
+def confirm_transaction(request):
+	user_pks = []
+	for (key, value) in request.GET.items():
+		result = re.match(r'^val_(?P<pk>\d+)$', key)
+		if result:
+			user_pks.append(result.group('pk'))
+	transaction_users = get_users().filter(pk__in=user_pks)
+	my_transaction_amt = Decimal(0)
+	for transaction_user in transaction_users:
+		transaction_user.transaction_amt = Decimal(request.GET['val_%d' % transaction_user.pk])
+		my_transaction_amt -= transaction_user.transaction_amt
+
+	old_balance = request.user.userprofile.credit
+	new_balance = old_balance + my_transaction_amt
+
+	context = {
+			'transaction_users': transaction_users,
+			'transaction_description': request.GET['descrip'],
+			'my_transaction_amt': my_transaction_amt,
+			'old_balance': old_balance,
+			'new_balance': new_balance,
+	}
+	return render_to_response('confirm_transaction.html', RequestContext(request, context))

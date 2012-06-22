@@ -1,0 +1,29 @@
+{% load currency %}
+
+<h1>Transaction Confirmation</h1>
+
+<form action="" method="post">
+	<input type="hidden" name="descrip" value="{{ transaction_description }}" />
+	<h2>{{ transaction_description }}</h2>
+
+<table border=1>
+
+<tr>
+<th>Name</th>
+<th>Owes</th>
+</tr>
+
+{% for transaction_user in transaction_users %}
+<tr>
+	<td>{{ transaction_user.get_full_name }}</td>
+	<td>{{ transaction_user.transaction_amt|currency }}</td>
+	<input type="hidden" name="val_{{ transaction_user.pk }}" value="{{ transaction_user.transaction_amt }}" />
+</tr>
+{% endfor %}
+
+</table><p>
+This means your credit for this transaction is {{ my_transaction_amt|currency }}.<br />
+Your balance will change from {{ old_balance|currency }} to {{ new_balance|currency }}.
+
+<p><input type="submit" name="action" value="Confirmed" />
+</form>

@@ -1,6 +1,6 @@
 {% with me=user %}
 <h1>Transaction Data</h1>
-<form action="" method="post">
+<form action="{% url creditpool.views.confirm_transaction %}" method="get">
 <table border=1>
 
 		<tr>
