@@ -10,6 +10,12 @@ class GlobalTransfer(models.Model):
 	entered = models.DateTimeField(auto_now_add=True)
 	description = models.TextField()
 
+	@models.permalink
+	def get_absolute_url(self):
+		return ('transfer', (), {
+			'id': self.pk,
+			})
+
 class UserTransfer(models.Model):
 	transfer = models.ForeignKey(GlobalTransfer, null=False)
 	user = models.ForeignKey(User, null=False)

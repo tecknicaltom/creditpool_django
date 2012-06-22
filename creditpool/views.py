@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render_to_response
+from django.shortcuts import redirect, render_to_response, get_object_or_404
 from django.template import RequestContext
 from decimal import Decimal
 import re
@@ -78,3 +78,10 @@ def commit_transaction(request):
 	request.user.userprofile.save()
 
 	return redirect(index)
+
+def transfer(request, id):
+	transfer = get_object_or_404(GlobalTransfer, pk=id)
+	context = {
+			'transfer': transfer,
+	}
+	return render_to_response('transfer.html', RequestContext(request, context))
