@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
 	user = models.OneToOneField(User)
 	credit = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+	history_days = models.SmallIntegerField(default=7)
 
 class GlobalTransfer(models.Model):
 	creator = models.ForeignKey(User, null=False)
@@ -21,5 +22,3 @@ class UserTransfer(models.Model):
 	user = models.ForeignKey(User, null=False)
 	credit = models.DecimalField(max_digits=10, decimal_places=2)
 	confirmed = models.BooleanField(default=False)
-
-

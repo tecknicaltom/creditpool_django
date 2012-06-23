@@ -32,10 +32,10 @@ def index(request):
 	average_imbalance = total_imbalance / users.count()
 	#throughput = UserTransfer.objects.extra(select={'abs_credit':'ABS(credit)'}).aggregate(throughput
 	throughput = sum([abs(xfer.credit) for xfer in UserTransfer.objects.all()]) / 2
+
 	context = {
 			'users': users,
 			'unconfirmed_transactions': request.user.usertransfer_set.filter(confirmed=False),
-			'history': 7,
 			'total_imbalance': total_imbalance,
 			'average_imbalance': average_imbalance,
 			'throughput': throughput,
@@ -74,6 +74,8 @@ def commit_transaction(request):
 		transaction_user.userprofile.credit += transaction_user.transaction_amt
 		transaction_user.userprofile.save()
 
+	user_transfer = UserTransfer(transfer=transfer, user=me, credit=my_transaction_amt)
+	user_transfer.save();
 	request.user.userprofile.credit += my_transaction_amt
 	request.user.userprofile.save()
 
@@ -85,3 +87,11 @@ def transfer(request, id):
 			'transfer': transfer,
 	}
 	return render_to_response('transfer.html', RequestContext(request, context))
+
+def change_history(request):
+	try:
+		request.user.userprofile.history_days = int(request.POST['history'])
+		request.user.userprofile.save()
+	except:
+		pass
+	return redirect(index)

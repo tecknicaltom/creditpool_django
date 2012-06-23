@@ -34,14 +34,17 @@ This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
 <input type="submit" name="action" value="Select Users" />
 </form>
 
-{% if history = 7 %}
+{% if me.userprofile.history_days = 7 %}
 	<hr /><h3>The week in review</h3>
 {% else %}
 	<hr /><h3>Some time ago...</h3>
 {% endif %}
 
-These are the transactions from the past <input type="text" name="history" value="{{ history }}" size=3 maxlength=5 /> days:<br />
+<form action="{% url creditpool.views.change_history %}" method="POST">
+These are the transactions from the past <input type="text" name="history" value="{{ me.userprofile.history_days }}" size=3 maxlength=5 /> days:<br />
 <input type="submit" name="action" value="Change History" /><p>
+{% csrf_token %}
+</form>
 
 {% include "transaction_list.inc" with transactions=me.usertransfer_set.all %}
 
