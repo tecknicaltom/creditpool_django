@@ -1,5 +1,6 @@
 {% load currency %}
 {% load abs %}
+
 {% with me=user %}
 
 <h1>Summary Report for {{ me.get_full_name }}</h1>
@@ -13,7 +14,7 @@ This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
 {% if unconfirmed_transactions.exists %}
 <hr /><h3>Unconfirmed transactions</h3>
 
-{% include "transaction_list.inc" with transactions=unconfirmed_transactions allow_confirm=1 %}
+{% include "creditpool/transaction_list.inc" with transactions=unconfirmed_transactions allow_confirm=1 %}
 
 <p>(Confirming a transaction means that you've seen it, not necessarily that you agree to it.  If you would like to contest a transaction, take it up with the transaction creator, in the "Who did it?" column.)</p>
 
@@ -46,7 +47,7 @@ These are the transactions from the past <input type="text" name="history" value
 {% csrf_token %}
 </form>
 
-{% include "transaction_list.inc" with transactions=recent_transactions %}
+{% include "creditpool/transaction_list.inc" with transactions=recent_transactions %}
 
 <hr />
 <h3>Totals</h3>

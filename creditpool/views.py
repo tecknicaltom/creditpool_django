@@ -31,7 +31,7 @@ def error(request, message):
 	context = {
 			'message': message,
 	}
-	return render_to_response('error.html', RequestContext(request, context))
+	return render_to_response('creditpool/error.html', RequestContext(request, context))
 
 def index(request):
 	users = get_users()
@@ -50,7 +50,7 @@ def index(request):
 			'throughput': throughput,
 			'recent_transactions': recent_transactions,
 	}
-	return render_to_response('index.html', RequestContext(request, context))
+	return render_to_response('creditpool/index.html', RequestContext(request, context))
 
 def new_transaction(request):
 	transaction_users = get_users().filter(pk__in=request.GET.getlist('user'))
@@ -59,7 +59,7 @@ def new_transaction(request):
 	context = {
 			'transaction_users': transaction_users,
 	}
-	return render_to_response('new_transaction.html', RequestContext(request, context))
+	return render_to_response('creditpool/new_transaction.html', RequestContext(request, context))
 
 def confirm_transaction(request):
 	(transaction_users, my_transaction_amt) = parse_request_amts(request.GET, request.user)
@@ -73,7 +73,7 @@ def confirm_transaction(request):
 			'old_balance': old_balance,
 			'new_balance': new_balance,
 	}
-	return render_to_response('confirm_transaction.html', RequestContext(request, context))
+	return render_to_response('creditpool/confirm_transaction.html', RequestContext(request, context))
 
 def commit_transaction(request):
 	(transaction_users, my_transaction_amt) = parse_request_amts(request.POST, request.user)
@@ -98,7 +98,7 @@ def transfer(request, id):
 	context = {
 			'transfer': transfer,
 	}
-	return render_to_response('transfer.html', RequestContext(request, context))
+	return render_to_response('creditpool/transfer.html', RequestContext(request, context))
 
 def change_history(request):
 	try:
