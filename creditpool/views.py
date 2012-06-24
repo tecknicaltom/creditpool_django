@@ -27,6 +27,12 @@ def parse_request_amts(params, me):
 		my_transaction_amt -= transaction_user.transaction_amt
 	return (transaction_users, my_transaction_amt)
 
+def error(request, message):
+	context = {
+			'message': message,
+	}
+	return render_to_response('error.html', RequestContext(request, context))
+
 def index(request):
 	users = get_users()
 	total_imbalance = sum([abs(u.userprofile.credit) for u in users]) / 2
@@ -48,6 +54,8 @@ def index(request):
 
 def new_transaction(request):
 	transaction_users = get_users().filter(pk__in=request.GET.getlist('user'))
+	if transaction_users.count() == 0:
+		return error(request, 'Nobody selected!')
 	context = {
 			'transaction_users': transaction_users,
 	}
