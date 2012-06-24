@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render_to_response, get_object_or_404
 from django.template import RequestContext
+from datetime import datetime, timedelta
 from decimal import Decimal
 import re
 from models import *
@@ -32,6 +33,8 @@ def index(request):
 	average_imbalance = total_imbalance / users.count()
 	#throughput = UserTransfer.objects.extra(select={'abs_credit':'ABS(credit)'}).aggregate(throughput
 	throughput = sum([abs(xfer.credit) for xfer in UserTransfer.objects.all()]) / 2
+	history_days = request.user.userprofile.history_days
+	recent_transactions = request.user.usertransfer_set.filter(transfer__entered__gte=datetime.now()-timedelta(days=history_days))
 
 	context = {
 			'users': users,
@@ -39,6 +42,7 @@ def index(request):
 			'total_imbalance': total_imbalance,
 			'average_imbalance': average_imbalance,
 			'throughput': throughput,
+			'recent_transactions': recent_transactions,
 	}
 	return render_to_response('index.html', RequestContext(request, context))
 

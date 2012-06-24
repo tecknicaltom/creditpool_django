@@ -46,7 +46,7 @@ These are the transactions from the past <input type="text" name="history" value
 {% csrf_token %}
 </form>
 
-{% include "transaction_list.inc" with transactions=me.usertransfer_set.all %}
+{% include "transaction_list.inc" with transactions=recent_transactions %}
 
 <hr />
 <h3>Totals</h3>
