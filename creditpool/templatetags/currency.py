@@ -1,3 +1,4 @@
+# based on http://djangosnippets.org/snippets/2326/
 from django import template
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
