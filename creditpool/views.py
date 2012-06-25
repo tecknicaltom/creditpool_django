@@ -1,16 +1,20 @@
+from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render_to_response, get_object_or_404
 from django.template import RequestContext
 from datetime import datetime, timedelta
 from decimal import Decimal
 import re
 from models import *
+import settings
 
 def get_users():
-	# this should look for users that are part of a group, and creates a UserProfile
-	# if one doesn't exist. Will also take into account deactivating users (globally
+	# TODO Will need to take into account deactivating users (globally
 	# and within creditpool)
-	#return [profile.user for profile in UserProfile.objects.all()]
-	return User.objects.filter(userprofile__isnull=False)
+	(group, created) = Group.objects.get_or_create(name=settings.GROUP_NAME)
+	users = group.user_set.all()
+	for user in users.filter(userprofile__isnull=True):
+		UserProfile(user=user).save()
+	return users
 
 def parse_request_amts(params, me):
 	user_pks = []
