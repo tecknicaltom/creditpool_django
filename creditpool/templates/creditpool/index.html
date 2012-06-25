@@ -47,7 +47,11 @@ These are the transactions from the past <input type="text" name="history" value
 {% csrf_token %}
 </form>
 
+{% if recent_transactions.count = 0 %}
+(None)
+{% else %}
 {% include "creditpool/transaction_list.inc" with transactions=recent_transactions %}
+{% endif %}
 
 <hr />
 <h3>Totals</h3>
