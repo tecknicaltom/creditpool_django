@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.views.decorators.http import require_POST
 from datetime import datetime, timedelta
 from decimal import Decimal
 import re
@@ -70,24 +71,40 @@ def new_transaction(request):
 
 @user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def confirm_new_transaction(request):
-	(transaction_users, my_transaction_amt) = parse_request_amts(request.GET, request.user)
+	try:
+		(transaction_users, my_transaction_amt) = parse_request_amts(request.GET, request.user)
+	except:
+		return error(request, 'Invalid transaction amount!')
+
+	description = request.GET.get('descrip', '')
+	if len(description) == 0 or re.match(r'^\s*$', description):
+		return error(request, 'No description entered!')
+
 	old_balance = request.user.userprofile.credit
 	new_balance = old_balance + my_transaction_amt
 
 	context = {
 			'transaction_users': transaction_users,
-			'transaction_description': request.GET['descrip'],
+			'transaction_description': description,
 			'my_transaction_amt': my_transaction_amt,
 			'old_balance': old_balance,
 			'new_balance': new_balance,
 	}
 	return render_to_response('creditpool/confirm_new_transaction.html', RequestContext(request, context))
 
+@require_POST
 @user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def commit_transaction(request):
-	(transaction_users, my_transaction_amt) = parse_request_amts(request.POST, request.user)
+	try:
+		(transaction_users, my_transaction_amt) = parse_request_amts(request.POST, request.user)
+	except:
+		return error(request, 'Invalid transaction amount!')
 
-	transaction = GlobalTransaction(creator=request.user, description=request.POST['descrip'])
+	description = request.POST.get('descrip', '')
+	if len(description) == 0 or re.match(r'^\s*$', description):
+		return error(request, 'No description entered!')
+
+	transaction = GlobalTransaction(creator=request.user, description=description)
 	transaction.save()
 	for transaction_user in transaction_users:
 		user_transaction = UserTransaction(transaction=transaction, user=transaction_user, credit=transaction_user.transaction_amt)
@@ -110,6 +127,7 @@ def transaction(request, id):
 	}
 	return render_to_response('creditpool/transaction.html', RequestContext(request, context))
 
+@require_POST
 @user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def change_history(request):
 	try:
