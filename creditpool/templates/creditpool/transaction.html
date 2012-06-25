@@ -1,4 +1,7 @@
+{% extends "base.html" %}
 {% load currency %}
+
+{% extends "base.html" %}
 
 <h1>Transaction #{{ transaction.pk }}</h1>
 <h2>{{ transaction.description }} ({{ transaction.entered }})</h2>
@@ -24,3 +27,4 @@
 	{% endfor %}
 </table>
 
+{% endblock %}

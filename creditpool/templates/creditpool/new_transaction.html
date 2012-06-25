@@ -1,4 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
 {% with me=user %}
+
 <h1>Transaction Data</h1>
 <form action="{% url creditpool.views.confirm_transaction %}" method="get">
 <table border=1>
@@ -26,4 +30,5 @@
 
 	</form>
 
-	{% endwith %}
+{% endwith %}
+{% endblock %}

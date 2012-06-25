@@ -1,4 +1,7 @@
+{% extends "base.html" %}
 {% load currency %}
+
+{% block content %}
 
 <h1>Transaction Confirmation</h1>
 
@@ -28,3 +31,5 @@ Your balance will change from {{ old_balance|currency }} to {{ new_balance|curre
 <p><input type="submit" name="action" value="Confirmed" />
 {% csrf_token %}
 </form>
+
+{% endblock %}
