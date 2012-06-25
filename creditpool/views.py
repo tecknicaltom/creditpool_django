@@ -69,7 +69,7 @@ def new_transaction(request):
 	return render_to_response('creditpool/new_transaction.html', RequestContext(request, context))
 
 @user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
-def confirm_transaction(request):
+def confirm_new_transaction(request):
 	(transaction_users, my_transaction_amt) = parse_request_amts(request.GET, request.user)
 	old_balance = request.user.userprofile.credit
 	new_balance = old_balance + my_transaction_amt
@@ -81,7 +81,7 @@ def confirm_transaction(request):
 			'old_balance': old_balance,
 			'new_balance': new_balance,
 	}
-	return render_to_response('creditpool/confirm_transaction.html', RequestContext(request, context))
+	return render_to_response('creditpool/confirm_new_transaction.html', RequestContext(request, context))
 
 @user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def commit_transaction(request):
