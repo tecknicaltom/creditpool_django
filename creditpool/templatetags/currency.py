@@ -1,12 +1,15 @@
 # based on http://djangosnippets.org/snippets/2326/
 from django import template
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
 import locale
+
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 register = template.Library()
 
-@register.filter()
-def currency(value, grouping=True):
+@register.filter(needs_autoescape=True)
+def currency(value, grouping=True, autoescape=None):
 	"""
 	e.g.
 	import locale
@@ -16,12 +19,17 @@ def currency(value, grouping=True):
 	"""
 	result = locale.currency(value, grouping=grouping)
 
+	if autoescape:
+		esc = conditional_escape
+	else:
+		esc = lambda x: x
+
 	# add css class if value is negative
 	if value < 0:
 		# replace the minus symbol if needed
 		if result[-1] == '-':
 			length = len(locale.nl_langinfo(locale.CRNCYSTR))
 			result = '%s-%s' % (result[0:length], result[length:-1])
-		return '<span class="negative">%s</span>' % result
+		return mark_safe('<span class="negative">%s</span>' % esc(result))
 
 	return result
