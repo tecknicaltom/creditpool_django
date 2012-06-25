@@ -5,6 +5,6 @@ urlpatterns = patterns('creditpool.views',
 	url(r'^new_transaction$', 'new_transaction'),
 	url(r'^confirm_transaction$', 'confirm_transaction'),
 	url(r'^commit_transaction$', 'commit_transaction'),
-	url(r'^transfer/(?P<id>\d+)$', 'transfer', name='transfer'),
+	url(r'^transaction/(?P<id>\d+)$', 'transaction', name='transaction'),
 	url(r'^change_history$', 'change_history'),
 )

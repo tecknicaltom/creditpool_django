@@ -37,14 +37,14 @@ def index(request):
 	users = get_users()
 	total_imbalance = sum([abs(u.userprofile.credit) for u in users]) / 2
 	average_imbalance = total_imbalance / users.count()
-	#throughput = UserTransfer.objects.extra(select={'abs_credit':'ABS(credit)'}).aggregate(throughput
-	throughput = sum([abs(xfer.credit) for xfer in UserTransfer.objects.all()]) / 2
+	#throughput = UserTransaction.objects.extra(select={'abs_credit':'ABS(credit)'}).aggregate(throughput
+	throughput = sum([abs(xfer.credit) for xfer in UserTransaction.objects.all()]) / 2
 	history_days = request.user.userprofile.history_days
-	recent_transactions = request.user.usertransfer_set.filter(transfer__entered__gte=datetime.now()-timedelta(days=history_days))
+	recent_transactions = request.user.usertransaction_set.filter(transaction__entered__gte=datetime.now()-timedelta(days=history_days))
 
 	context = {
 			'users': users,
-			'unconfirmed_transactions': request.user.usertransfer_set.filter(confirmed=False),
+			'unconfirmed_transactions': request.user.usertransaction_set.filter(confirmed=False),
 			'total_imbalance': total_imbalance,
 			'average_imbalance': average_imbalance,
 			'throughput': throughput,
@@ -78,27 +78,27 @@ def confirm_transaction(request):
 def commit_transaction(request):
 	(transaction_users, my_transaction_amt) = parse_request_amts(request.POST, request.user)
 
-	transfer = GlobalTransfer(creator=request.user, description=request.POST['descrip'])
-	transfer.save()
+	transaction = GlobalTransaction(creator=request.user, description=request.POST['descrip'])
+	transaction.save()
 	for transaction_user in transaction_users:
-		user_transfer = UserTransfer(transfer=transfer, user=transaction_user, credit=transaction_user.transaction_amt)
-		user_transfer.save();
+		user_transaction = UserTransaction(transaction=transaction, user=transaction_user, credit=transaction_user.transaction_amt)
+		user_transaction.save();
 		transaction_user.userprofile.credit += transaction_user.transaction_amt
 		transaction_user.userprofile.save()
 
-	user_transfer = UserTransfer(transfer=transfer, user=me, credit=my_transaction_amt)
-	user_transfer.save();
+	user_transaction = UserTransaction(transaction=transaction, user=request.user, credit=my_transaction_amt)
+	user_transaction.save();
 	request.user.userprofile.credit += my_transaction_amt
 	request.user.userprofile.save()
 
-	return redirect(transfer)
+	return redirect(transaction)
 
-def transfer(request, id):
-	transfer = get_object_or_404(GlobalTransfer, pk=id)
+def transaction(request, id):
+	transaction = get_object_or_404(GlobalTransaction, pk=id)
 	context = {
-			'transfer': transfer,
+			'transaction': transaction,
 	}
-	return render_to_response('creditpool/transfer.html', RequestContext(request, context))
+	return render_to_response('creditpool/transaction.html', RequestContext(request, context))
 
 def change_history(request):
 	try:

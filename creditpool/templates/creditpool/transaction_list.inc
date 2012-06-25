@@ -1,7 +1,7 @@
 {% comment %}
 Expects variables set:
  allow_confirm: boolean, whether to include the confirm buttons
- transactions: QuerySet of UserTransfer items
+ transactions: QuerySet of UserTransaction items
 {% endcomment %}
 
 {% load currency %}
@@ -19,7 +19,7 @@ Expects variables set:
 	</tr>
 
 	{% for user_transaction in transactions %}
-	{% with transaction=user_transaction.transfer %}
+	{% with transaction=user_transaction.transaction %}
 	<tr>
 		{% if allow_confirm %}
 			{% if not transaction.confirmed %}
