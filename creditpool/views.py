@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import Group
 from django.shortcuts import redirect, render_to_response, get_object_or_404
 from django.template import RequestContext
@@ -37,6 +38,7 @@ def error(request, message):
 	}
 	return render_to_response('creditpool/error.html', RequestContext(request, context))
 
+@user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def index(request):
 	users = get_users()
 	total_imbalance = sum([abs(u.userprofile.credit) for u in users]) / 2
@@ -56,6 +58,7 @@ def index(request):
 	}
 	return render_to_response('creditpool/index.html', RequestContext(request, context))
 
+@user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def new_transaction(request):
 	transaction_users = get_users().filter(pk__in=request.GET.getlist('user'))
 	if transaction_users.count() == 0:
@@ -65,6 +68,7 @@ def new_transaction(request):
 	}
 	return render_to_response('creditpool/new_transaction.html', RequestContext(request, context))
 
+@user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def confirm_transaction(request):
 	(transaction_users, my_transaction_amt) = parse_request_amts(request.GET, request.user)
 	old_balance = request.user.userprofile.credit
@@ -79,6 +83,7 @@ def confirm_transaction(request):
 	}
 	return render_to_response('creditpool/confirm_transaction.html', RequestContext(request, context))
 
+@user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def commit_transaction(request):
 	(transaction_users, my_transaction_amt) = parse_request_amts(request.POST, request.user)
 
@@ -97,6 +102,7 @@ def commit_transaction(request):
 
 	return redirect(transaction)
 
+@user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def transaction(request, id):
 	transaction = get_object_or_404(GlobalTransaction, pk=id)
 	context = {
@@ -104,6 +110,7 @@ def transaction(request, id):
 	}
 	return render_to_response('creditpool/transaction.html', RequestContext(request, context))
 
+@user_passes_test(lambda u: u.groups.filter(name=settings.GROUP_NAME).exists())
 def change_history(request):
 	try:
 		request.user.userprofile.history_days = int(request.POST['history'])
