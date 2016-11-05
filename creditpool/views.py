@@ -6,8 +6,8 @@ from django.views.decorators.http import require_POST
 from datetime import datetime, timedelta
 from decimal import Decimal
 import re
-from models import *
-import settings
+from .models import *
+from . import settings
 
 def get_users():
 	# TODO Will need to take into account deactivating users (globally
