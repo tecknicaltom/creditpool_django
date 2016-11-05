@@ -24,7 +24,7 @@ This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
 
 
 <hr /><h3>New transaction</h3>
-<form action="{% url creditpool.views.new_transaction %}" method="get">
+<form action="{% url 'creditpool.views.new_transaction' %}" method="get">
 <select multiple name="user">
 
 {% for user in users|dictsort:"first_name"|dictsort:"last_name" %}
@@ -43,7 +43,7 @@ This means you owe {{ me.userprofile.credit|currency }} to the credit pool.
 	<hr /><h3>Some time ago...</h3>
 {% endif %}
 
-<form action="{% url creditpool.views.change_history %}" method="POST">
+<form action="{% url 'creditpool.views.change_history' %}" method="POST">
 These are the transactions from the past <input type="text" name="history" value="{{ me.userprofile.history_days }}" size=3 maxlength=5 /> days:<br />
 <input type="submit" name="action" value="Change History" /><p>
 {% csrf_token %}

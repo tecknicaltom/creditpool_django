@@ -5,7 +5,7 @@
 
 <h1>Transaction Confirmation</h1>
 
-<form action="{% url creditpool.views.commit_transaction %}" method="post">
+<form action="{% url 'creditpool.views.commit_transaction' %}" method="post">
 	<input type="hidden" name="descrip" value="{{ transaction_description }}" />
 	<h2>{{ transaction_description }}</h2>
 
