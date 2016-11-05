@@ -5,4 +5,4 @@ register = template.Library()
 
 @register.filter()
 def abs(value):
-	return _abs(value)
+    return _abs(value)
